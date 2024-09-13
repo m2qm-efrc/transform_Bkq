@@ -1,10 +1,10 @@
-# ========================================================================================================
+# =================================================================================================
 # References
 # 1. General expressions for Stevens and Racah operator equivalents, Duros et al, 2024, arXiv:2405.08978.
 # 2. Quantum theory of angular momentum, D A Varshalovich, A N Moskalev, and V K Khersonskii, 1988. 
 # 3. Transformation relations for the conventional Okq and normalised Okq Stevens operator equivalents 
 #    with k=1 to 6 and -k⩽q⩽k, C Rudowicz, 1985
-# ========================================================================================================
+# =================================================================================================
 
 import numpy as np
 import scipy as sp
@@ -15,23 +15,9 @@ from sympy.physics.wigner import wigner_3j
 from external.StevensOperators import StevensOpA
 import pyscf
 
-# ========================================================================================================
-# Rotation
-# ========================================================================================================
-
-def get_D(j, alpha, beta, gamma):
-    # Find the Wigner D matrix for spherical harmonics.
-    # Convention: external, zyz, gamma-first, same as https://en.wikipedia.org/wiki/Wigner_D-matrix
-
-    D_real = pyscf.symm.Dmatrix.Dmatrix(j, alpha, beta, gamma)
-    u = pyscf.symm.sph.sph_pure2real(j)
-    D = u @ D_real @ np.transpose( np.conjugate(u) )
-
-    return D
-
-# ========================================================================================================
+# =================================================================================================
 # Irreducible tensor operators (ITO)
-# ========================================================================================================
+# =================================================================================================
 
 def factorial_ldb(k):
     return np.longdouble(factorial(k, exact=True))
@@ -89,7 +75,7 @@ def get_Tkq(k, q, j):
             Tkq_row.append(sign * threejm * Tkjj)
         Tkq.append(Tkq_row)
     Tkq = np.array(Tkq)
-    Tkq = Tkq.astype(np.float128)
+    Tkq = Tkq.astype(np.float64)
     return Tkq
 
 def get_Tk(k, j):
@@ -117,9 +103,9 @@ def get_Bk_ITO_by_projection(Tk, k, j, H):
     Bk = np.array(Bk)
     return Bk
 
-# ========================================================================================================
+# =================================================================================================
 # From ITO to ESO. ITO: irreducible tensor operators. ESO: extended Stevens operators.
-# ========================================================================================================
+# =================================================================================================
 
 def get_A(k, j):
     """
@@ -136,9 +122,9 @@ def get_A(k, j):
     A = np.transpose(A)
     return A
 
-# ========================================================================================================
+# =================================================================================================
 # Check various relations
-# ========================================================================================================
+# =================================================================================================
 
 def check_rotatedTk(k, j, q):
     alpha = 2*np.pi*np.random.rand()
@@ -238,7 +224,6 @@ def check_rotatedBkq_ESO(k, j):
     D_dagger = np.conjugate(np.transpose(D))
 
     A = get_A(k, j)
-    # A_inv = np.linalg.inv(A) # does not support complex256
     A_inv = sp.linalg.inv(A)
 
     Bk_new = np.einsum('qp,pr,rs,s->q', A_inv, D_dagger, A, Bk)
@@ -265,7 +250,179 @@ def check_rotatedBkq_ESO(k, j):
     
     return
 
+# =================================================================================================
+# Read Bkq
+# =================================================================================================
 
+def read_Bkqs(fname):
+    """
+    Format of Bkqs.dat: k, q, Bkq
+    """
+    Bkqs = np.loadtxt(fname)
+    return Bkqs
+
+def get_Bk_dict(Bkqs):
+
+    ks = [int(Bkqs[i, 0]) for i in range(Bkqs.shape[0])]
+    qs = [int(Bkqs[i, 1]) for i in range(Bkqs.shape[0])]
+
+    unique_ks = set( list( ks ) )
+
+    Bkqs_dict = dict({})
+    for i in range(Bkqs.shape[0]):
+        Bkqs_dict[(ks[i], qs[i])] = Bkqs[i, 2]
+    kq_keys = Bkqs_dict.keys()
+
+    Bk_dict = dict({})
+    for k in unique_ks:
+        Bk_dict[k] = []
+        for q in range(-k, k+1):
+            if (k, q) in kq_keys:
+                Bk_dict[k].append(Bkqs_dict[(k, q)])
+            else:
+                Bk_dict[k].append(0.0)
+
+    return ( unique_ks, Bk_dict )
+
+
+# =================================================================================================
+# Rotation
+# =================================================================================================
+
+def get_D(j, alpha, beta, gamma):
+    """
+    Find the Wigner D matrix for spherical harmonics.
+    Convention: external, zyz, gamma-first, same as https://en.wikipedia.org/wiki/Wigner_D-matrix
+    """
+
+    D_real = pyscf.symm.Dmatrix.Dmatrix(j, alpha, beta, gamma)
+    u = pyscf.symm.sph.sph_pure2real(j)
+    D = u @ D_real @ np.transpose( np.conjugate(u) )
+
+    return D
+
+def transform_Bk_for_one_k(k, j, Bk, alpha, beta, gamma):
+    """
+    R(alpha, beta, gamma): extrinsic, gamma-first, zyz.
+    R(alpha, beta, gamma) rotates the initial reference frame to the target reference frame.
+    Unit for angles: deg
+    Bk is a vector [Bk(q), q = -k, ..., k]
+    k: rank of the crystal field parameters Bk
+    j: total angular momentum
+    """
+
+    # Convert deg to rad.
+    alpha = np.deg2rad(alpha); beta = np.deg2rad(beta); gamma = np.deg2rad(gamma)
+
+    # Rotate Bkq
+    D = get_D(k, alpha, beta, gamma)
+    D_dagger = np.conjugate(np.transpose(D))
+
+    A = get_A(k, j)
+    A_inv = sp.linalg.inv(A)
+
+    Bk_new = np.einsum('qp,pr,rs,s->q', A_inv, D_dagger, A, Bk)
+    Bk_new = np.real(Bk_new)
+
+    return Bk_new
+
+def transform_Bk_for_all_ks(unique_ks, Bk_dict, j, alpha, beta, gamma):
+    Bkqs = []
+    for k in unique_ks:
+        Bk = Bk_dict[k]
+        Bk_new = transform_Bk_for_one_k(k, j, Bk, alpha, beta, gamma)
+        for q in range(-k, k+1):
+            Bkqs.append([k, q, Bk_new[k+q]])
+    return Bkqs
+
+def transform_Bk_using_emats(unique_ks, Bk_dict, j, emat_in, emat_out):
+
+    # Fist, find the rotation matrix that rotates emat_in to emat_out
+    # emat_in emat_in^T = emat_out emat_out^T
+    # emat_out^T emat_in emat_in^T = emat_out^T
+    # R emat_in^T = emat_out^T, R = emat_out^T emat_in
+    rotmat = np.transpose(emat_out) @ emat_in
+
+    # Second, find the corresponding Euler angles 
+    r = R.from_matrix(rotmat)
+    gamma, beta, alpha = r.as_euler('zyz', degrees=True) # gamma is to be applied first
+
+    # Third, tranform Bkqs using the Euler anles
+    Bkqs = transform_Bk_for_all_ks(unique_ks, Bk_dict, j, alpha, beta, gamma)
+
+    return Bkqs
+
+def save_Bkqs(fname, Bkqs):
+    with open(fname, "w") as f:
+        for i in range(len(Bkqs)):
+            f.write("{:3d} {:3d} {:18.10E} {:8.4f}\n".format(*Bkqs[i], Bkqs[i][2]))
+    return
+
+def read_transform_and_save_Bkqs(fin, fout, j, alpha, beta, gamma):
+    """
+    fin: input file that contains the original Bkqs
+    fout: output file that contains the transformed Bkqs
+    j: total angular momentum
+    R(alpha, beta, gamma): extrinsic, gamma-first, zyz.
+    R(alpha, beta, gamma) rotates the initial reference frame to the target reference frame.
+    Unit for angles: deg
+    """
+    Bkqs = read_Bkqs(fin)
+    unique_ks, Bk_dict = get_Bk_dict(Bkqs)
+    Bkqs = transform_Bk_for_all_ks(unique_ks, Bk_dict, j, alpha, beta, gamma)
+    save_Bkqs(fout, Bkqs)
+    return
+
+def read_transform_and_save_Bkqs_emat(fin, fout, j, emat_in, emat_out):
+    """
+    fin: input file that contains the original Bkqs
+    fout: output file that contains the transformed Bkqs
+    j: total angular momentum
+    """
+    Bkqs = read_Bkqs(fin)
+    unique_ks, Bk_dict = get_Bk_dict(Bkqs)
+    Bkqs = transform_Bk_using_emats(unique_ks, Bk_dict, j, emat_in, emat_out)
+    save_Bkqs(fout, Bkqs)
+    return
+
+def find_rotated_reference_frame(emat_in, alpha, beta, gamma):
+    # Rotate the reference frame emat_in by Rz(alpha) Ry(beta) Rz(gamma)
+
+    # Find the rotation matrix
+    r = R.from_euler('zyz', [gamma, beta, alpha], degrees=True)
+    rotmat = r.as_matrix()
+
+    emat_out = np.transpose( rotmat @ np.transpose(emat_in) )
+
+    print_emat_for_spin_model(emat_out)
+
+    return emat_out
+
+def read_and_print_Bkqs(fin):
+    Bkqs = read_Bkqs(fin)
+    print_Bkqs_for_spin_model(Bkqs)
+    return
+
+
+# =================================================================================================
+# Print to the screen
+# =================================================================================================
+
+def print_emat_for_spin_model(emat):
+    print( ( "reference_frame: [ " + 8*"{:13.10f}, " + "{:13.10f} ]" ).format(*emat.flatten()) )
+    return
+
+def print_Bkqs_for_spin_model(Bkqs):
+    n = Bkqs.shape[0]
+    print( ( "ks: [ " + (n-1)*"{:3d}, " + "{:3d} ]" ).format(*Bkqs[:, 0].astype(int)) )
+    print( ( "qs: [ " + (n-1)*"{:3d}, " + "{:3d} ]" ).format(*Bkqs[:, 1].astype(int)) )
+    print( ( "Bkqs: [ " + (n-1)*"{:18.10E}, " + "{:18.10E} ]" ).format(*Bkqs[:, 2]) )
+    return
+
+
+# =================================================================================================
+# Test
+# =================================================================================================
 
 def test():
 
@@ -318,6 +475,23 @@ def test():
     #print(A)
 
     #k=12; j=6; check_rotatedBkq_ESO(k, j)
+
+    #fin = "Bkqs.dat"; fout = "Bkqs_new.dat"; j = 8; alpha = 0; beta = 90; gamma = 0
+    #read_transform_and_save_Bkqs(fin, fout, j, alpha, beta, gamma)
+
+    #fin = "Bkqs.dat"; fout = "Bkqs_new.dat"; j = 8
+    #emat_in  = np.array([[ 0.000000, 0.000000, 1.000000], [-1.000000, 0.000000, 0.000000], [ 0.000000,-1.000000, 0.000000]])
+    #emat_out = np.eye(3)
+    #read_transform_and_save_Bkqs_emat(fin, fout, j, emat_in, emat_out)
+
+    #emat_in = np.eye(3); alpha = 0; beta = 90; gamma = 0
+    #find_rotated_reference_frame(emat_in, alpha, beta, gamma)
+
+    #fin = "Bkqs_new.dat"
+    #read_and_print_Bkqs(fin)
+
+    print_emat_for_spin_model(np.eye(3))
+    #print_emat_for_spin_model(emat_out)
 
     return
 

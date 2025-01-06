@@ -4,11 +4,11 @@ The purpose of this this code is two fold. 1. Transform the crystal field parame
 
 ## Usage:
 
-1. ```python rotate_Bkq.py``` to rotate the CFPs Bkq under a rotation of the reference frame.
+1. ```python rotate_Bkq.py``` to rotate the ESO-based crystal field parameters under a rotation of the reference frame.
 
-2. ```python get_ITO_CF_parameters.py``` to transform the CFPs Bkq from ESO to ITO basis, and vice versa.
+2. ```python get_ITO_CF_parameters.py``` to transform the ESO-based crystal field parameters to ITO-based crystal field parameters, and vice versa.
 
-An example input file Bkqs.dat is provided for the rotation of the CFPs Bkq. The input file should contain the CFPs Bkq in the following format:
+An example input file Bkqs.dat is provided for both commands given above. The input file should contain the crystal field parameters in the following format:
 
 ```
 Column 1: k

@@ -1,6 +1,6 @@
 # Transform crystal field parameters
 
-The purpose of this this code is two fold. 1. Transform the crystal field parameters (CFPs) Bkq for extended Stevens operators (ESOs) under a rotation of the reference frame. 2. Transform the ESO-based crystal field parameters into ITO-based crystal field parameters, and vice versa, where ITO stands for irreducible tensor operators.
+The purpose of this this code is twofold. 1. Transform the crystal field parameters (CFPs) Bkq for extended Stevens operators (ESOs) under a rotation of the reference frame. 2. Transform the ESO-based crystal field parameters into ITO-based crystal field parameters, and vice versa, where ITO stands for irreducible tensor operators.
 
 ## Usage:
 

@@ -4,9 +4,9 @@ The purpose of this this code is two fold. 1. Transform the crystal field parame
 
 ## Usage:
 
-1. ```python rotate_Bkq.py``` to rotate the ESO-based crystal field parameters under a rotation of the reference frame.
+1. ```python rotate_Bkq.py``` to rotate the ESO-based crystal field parameters under a rotation of the reference frame. The rotation can be specified in two ways in the code ```rotate_Bkq.py```. The first way is to specify the basis vectors of both the initial and final reference frames. The second way is to use Euler angles. 
 
-2. ```python get_ITO_CF_parameters.py``` to transform the ESO-based crystal field parameters to ITO-based crystal field parameters, and vice versa.
+2. ```python get_ITO_CF_parameters.py``` to transform the ESO-based crystal field parameters to ITO-based crystal field parameters, and vice versa. Four flavors of the irreducible tensor operators are supported in this code, i.e. Racah, Wybourne, spherical harmonic, and noname. 
 
 An example input file Bkqs.dat is provided for both commands given above. The input file should contain the crystal field parameters in the following format:
 

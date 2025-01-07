@@ -29,13 +29,13 @@ Four flavors of the irreducible tensor operators are supported in this code, i.e
 #### 2.2.1 ESO-based CFPs to ITO-based CFPs
 
 1. Provide the initial ESO-based crystal field parameters in a file, say ```Bkqs.dat```.
-2. Modify "get_ITO_CFPs.py" to specify the input file name and the total angular momentum J. 
+2. Modify ```get_ITO_CFPs.py``` to specify the input file name and the total angular momentum J. 
 3. ```python get_ITO_CFPs.py``` to transform the ESO-based crystal field parameters to ITO-based crystal field parameters.
 
 #### 2.2.2 ITO-based CFPs to ESO-based CFPs
 
 1. Provide the initial ITO-based crystal field parameters in a file, say ```Bkqs_spherical.dat```.
-2. Modify "get_ESO_CFPs.py" to specify the input file name and the total angular momentum J. 
+2. Modify ```get_ESO_CFPs.py``` to specify the input file name and the total angular momentum J. 
 3. ```python get_ESO_CFPs.py``` to transform the ITO-based crystal field parameters to ESO-based crystal field parameters.
 
 Note that the ITO-based crystal field parameters are complex numbers. The third column of the input file must include both the real and imaginary parts. 

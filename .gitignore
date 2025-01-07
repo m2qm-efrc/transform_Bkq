@@ -1,3 +1,12 @@
+# Data files
+
+*.dat
+*.txt
+
+# Exception
+
+Bkqs.dat
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

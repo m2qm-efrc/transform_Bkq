@@ -12,6 +12,7 @@
 #    gamma angle applied first. The Euler angles are in degrees.
 # ======================================================================================================================
 
+import numpy as np
 from functions import transform_Bkqs
 
 if __name__ == "__main__":
@@ -36,7 +37,7 @@ if __name__ == "__main__":
     emat_out = np.eye(3)
 
     # Rotate the crystal field parameters from the initial reference frame to the target reference frame
-    trransform_Bkqs(fin, fout, j, use_emat=True, emat_in=emat_in, emat_out=emat_out)
+    transform_Bkqs(fin, fout, j, use_emat=True, emat_in=emat_in, emat_out=emat_out)
 
     # -----------------------------------------------------------------------------------------------
     # Usage 2: Use the Euler angles from the initial reference frame to the target reference frame
@@ -46,5 +47,5 @@ if __name__ == "__main__":
     # alpha = 0; beta = 90; gamma = 0
 
     # Rotate the crystal field parameters from the initial reference frame to the target reference frame
-    # trransform_Bkqs(fin, fout, j, use_emat=False, euler_angles=[alpha,beta,gamma])
+    # transform_Bkqs(fin, fout, j, use_emat=False, euler_angles=[alpha,beta,gamma])
     

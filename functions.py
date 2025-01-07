@@ -462,7 +462,7 @@ def read_and_print_Bkqs(fin):
     print_Bkqs_for_spin_model(Bkqs)
     return
 
-def trransform_Bkqs(fin, fout, j, use_emat=False, euler_angles=(0,0,0), emat_in=np.eye(3), emat_out=np.eye(3)):
+def transform_Bkqs(fin, fout, j, use_emat=False, euler_angles=(0,0,0), emat_in=np.eye(3), emat_out=np.eye(3)):
     """
     Transform the crystal field parameters Bkqs using Euler angles or the basis vectors of the initial and target reference frames.
 

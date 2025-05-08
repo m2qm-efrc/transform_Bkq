@@ -50,14 +50,14 @@ def get_reduced_matrix_element(k, j, ak):
     """
     return (-1)**k * ak * factorial_ldb(k) * np.sqrt(factorial_ldb(int(2*j+k+1))/(factorial_ldb(2*k)*factorial_ldb(int(2*j-k))))
     
-def get_an_element_of_Tkq(k, q, j, m1, m2):
+def get_an_element_of_Tkq(k, q, j, m1, m2, convention="spherical"):
     """
     <j m1 | Tkq | j m2 > = (-1)^(j-m1) 3jm(j, k, j, -m1, q, m2) <j|| Tk || j>
     3jm = wigner_3j(j1, j2, j3, m1, m2, m3)
     """
     # threejm = wigner_3j(j, k, j, -m1, q, m2)
     threejm = wigner_3j(j, k, Rational(j), -Rational(m1), q, Rational(m2)).evalf(30)
-    ak = get_ak(k, j)
+    ak = get_ak(k, j, convention=convention)
     Tkjj = get_reduced_matrix_element(k, j, ak)
     return (-1)**(j-m1) * threejm * Tkjj
 

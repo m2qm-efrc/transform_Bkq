@@ -15,7 +15,8 @@ if __name__ == "__main__":
     # 1. "spherical": spherical harmonic tensor operators
     # 2. "Racah": Racah irreducible tensor operators
     # 3. "Wybourne": Wybourne irreducible tensor operators
-    # 4. "noname": unnamed irreducible tensor operators
+    # 4. 'Iwahara−Chibotaru': Iwahara−Chibotaru irreducible tensor operators
+    # 5. "noname": unnamed irreducible tensor operators
 
     # Input crystal field parameters
     fin = "Bqks_spherical.dat"

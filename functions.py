@@ -12,6 +12,7 @@ from scipy.special import factorial
 from scipy.spatial.transform import Rotation as R
 from sympy import Rational
 from sympy.physics.wigner import wigner_3j, wigner_d
+from sympy.physics.quantum import cg
 from StevensOperators import StevensOpA
 # import pyscf # Only for the Wigner D matrix during testing
 
@@ -20,7 +21,7 @@ from StevensOperators import StevensOpA
 # =================================================================================================
 
 def factorial_ldb(k):
-    return np.longdouble(factorial(k, exact=True))
+    return np.longdouble(factorial(int(k), exact=True))
 
 def get_ak(k, j, convention="spherical"):
     """
@@ -38,6 +39,8 @@ def get_ak(k, j, convention="spherical"):
         # This convention leads to sizable matrix elements of Tkq, which is suitable for numerical anaylysis. 
         # Both Racah and Wybourne conventions lead to rather small matrix elements of Tkq for big k. 
         ak = (-1)**k * np.sqrt(factorial_ldb(2*k)) / factorial_ldb(k)
+    elif convention == "Iwahara−Chibotaru":
+        ak = (-1)**k * np.sqrt(2*j+1) / factorial_ldb(k) / np.sqrt(factorial_ldb(2*j+k+1) / (factorial_ldb(2*k) * factorial_ldb(2*j-k)) ) / np.longdouble( cg.CG(j, j, k, 0, j, j).doit().evalf(10) )
     else:
         # Same as spherical
         ak = (-1)**k * np.sqrt(factorial_ldb(2*k)) / factorial_ldb(k)
@@ -590,9 +593,10 @@ def transform_Bqks_to_Bkqs(fin, j, convention="spherical"):
 
 if __name__ == "__main__":
 
-    #k=8; j=6
-    #ak = get_ak(k, j)
-    #print(ak)
+    # k=14; j=7.5
+    # ak = get_ak(k, j, convention="spherical")
+    # ak = get_ak(k, j, convention="Iwahara−Chibotaru")
+    # print(ak)
     
     #k=2; q=-2; j=2; m1=0; m2=2
     #get_an_element_of_Tkq(k, q, j, m1, m2)

@@ -4,6 +4,7 @@
 # 2. Quantum theory of angular momentum, D A Varshalovich, A N Moskalev, and V K Khersonskii, 1988. 
 # 3. Transformation relations for the conventional Okq and normalised Okq Stevens operator equivalents 
 #    with k=1 to 6 and -k⩽q⩽k, C Rudowicz, 1985
+# 4. J-pseudospin states and the crystal field of cubic systems, Iwahara et al., PRB 98, 054436 (2018).
 # =================================================================================================
 
 import numpy as np
@@ -40,6 +41,7 @@ def get_ak(k, j, convention="spherical"):
         # Both Racah and Wybourne conventions lead to rather small matrix elements of Tkq for big k. 
         ak = (-1)**k * np.sqrt(factorial_ldb(2*k)) / factorial_ldb(k)
     elif convention == "Iwahara−Chibotaru":
+        # This coefficient is derived from Eq. 8 of Ref 4 using the Wigner-Eckart theorem.
         ak = (-1)**k * np.sqrt(2*j+1) / factorial_ldb(k) / np.sqrt(factorial_ldb(2*j+k+1) / (factorial_ldb(2*k) * factorial_ldb(2*j-k)) ) / np.longdouble( cg.CG(j, j, k, 0, j, j).doit().evalf(10) )
     else:
         # Same as spherical

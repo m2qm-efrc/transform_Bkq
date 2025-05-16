@@ -24,7 +24,7 @@ Column 3: Bkq
 
 ### 2.2. ESO-based CFPs to/from ITO-based CFPs
 
-Four flavors of the irreducible tensor operators are supported in this code, i.e. Racah, Wybourne, spherical harmonic, and noname. (Ref 1)
+Five flavors of the irreducible tensor operators are supported in this code, i.e. Racah, Wybourne, spherical harmonic, Iwahara−Chibotaru, and noname. (Refs 1 and 2)
 
 #### 2.2.1 ESO-based CFPs to ITO-based CFPs
 
@@ -42,6 +42,7 @@ Note that the ITO-based crystal field parameters are complex numbers. The third 
 
 ## 3. References:
 
-1. General expressions for Stevens and Racah operator equivalents, Duros et al, 2024, arXiv:2405.08978.
-2. Quantum theory of angular momentum, D A Varshalovich, A N Moskalev, and V K Khersonskii, 1988. 
-3. Transformation relations for the conventional Okq and normalised Okq Stevens operator equivalents with k=1 to 6 and -k⩽q⩽k, C Rudowicz, 1985
+1. Duros et al., General expressions for Stevens and Racah operator equivalents, arXiv:2405.08978 (2024).
+2. Iwahara et al., J-pseudospin states and the crystal field of cubic systems, Phy. Rev. B 98, 054436 (2018).
+3. D A Varshalovich, A N Moskalev, and V K Khersonskii, Quantum theory of angular momentum, 1988. 
+4. C Rudowicz, Transformation relations for the conventional Okq and normalised Okq Stevens operator equivalents with k=1 to 6 and -k⩽q⩽k, J. Phys. C: Solid State Phys. 18, 3837 (1985).

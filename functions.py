@@ -1,10 +1,10 @@
 # =================================================================================================
 # References
-# 1. General expressions for Stevens and Racah operator equivalents, Duros et al, 2024, arXiv:2405.08978.
-# 2. Quantum theory of angular momentum, D A Varshalovich, A N Moskalev, and V K Khersonskii, 1988. 
-# 3. Transformation relations for the conventional Okq and normalised Okq Stevens operator equivalents 
-#    with k=1 to 6 and -k⩽q⩽k, C Rudowicz, 1985
-# 4. J-pseudospin states and the crystal field of cubic systems, Iwahara et al., PRB 98, 054436 (2018).
+# 1. Duros et al., General expressions for Stevens and Racah operator equivalents, arXiv:2405.08978 (2024).
+# 2. Iwahara et al., J-pseudospin states and the crystal field of cubic systems, Phy. Rev. B 98, 054436 (2018).
+# 3. D A Varshalovich, A N Moskalev, and V K Khersonskii, Quantum theory of angular momentum, 1988. 
+# 4. C Rudowicz, Transformation relations for the conventional Okq and normalised Okq Stevens operator 
+#    equivalents with k=1 to 6 and -k⩽q⩽k, J. Phys. C: Solid State Phys. 18, 3837 (1985).
 # =================================================================================================
 
 import numpy as np

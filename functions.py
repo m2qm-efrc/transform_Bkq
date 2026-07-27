@@ -388,7 +388,12 @@ def transform_Bk_for_all_ks(unique_ks, Bk_dict, j, alpha, beta, gamma):
     Bkqs = []
     for k in unique_ks:
         Bk = Bk_dict[k]
-        Bk_new = transform_Bk_for_one_k(k, j, Bk, alpha, beta, gamma)
+        if k == 0:
+            # B00 multiplies the identity operator, so it is invariant under rotation.
+            # (StevensOpA defines O00 as the zero matrix, which makes get_A(0, j) singular.)
+            Bk_new = Bk
+        else:
+            Bk_new = transform_Bk_for_one_k(k, j, Bk, alpha, beta, gamma)
         for q in range(-k, k+1):
             Bkqs.append([k, q, Bk_new[k+q]])
     return Bkqs
